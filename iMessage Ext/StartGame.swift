@@ -8,12 +8,12 @@
 
 import UIKit
 
-protocol AddMessageViewControllerDelegate : class {
-    func addMessageViewControllerDidSubmit(caption: String)
+protocol StartGameViewControllerDelegate : class {
+    func startGameViewControllerDidSubmit(caption: String)
 }
 class StartGame: UIViewController {
     
-    weak var delegate : AddMessageViewControllerDelegate!
+    weak var delegate : StartGameViewControllerDelegate!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -31,7 +31,7 @@ class StartGame: UIViewController {
     func addMessage() {
 
         let caption = "Rock"
-        self.delegate.addMessageViewControllerDidSubmit(caption: caption)
+        self.delegate.startGameViewControllerDidSubmit(caption: caption)
     }
     
     

@@ -9,7 +9,7 @@
 import UIKit
 import Messages
 
-class MessagesViewController: MSMessagesAppViewController, AddMessageViewControllerDelegate {
+class MessagesViewController: MSMessagesAppViewController, StartGameViewControllerDelegate, GameViewControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,13 +40,23 @@ class MessagesViewController: MSMessagesAppViewController, AddMessageViewControl
         controller.didMove(toParent: self)		
     }
     
-    func addMessageViewControllerDidSubmit(caption: String) {
+    func startGameViewControllerDidSubmit(caption: String) {
         let layout = MSMessageTemplateLayout()
         layout.caption = caption
         
-        let message = MSMessage()
+        let session = activeConversation?.selectedMessage?.session
+        let message = MSMessage(session: session ?? MSSession())
         message.layout = layout
+        self.activeConversation?.insert(message, completionHandler: nil)
+    }
+    
+    func gameViewControllerDidSubmit(caption: String) {
+        let layout = MSMessageTemplateLayout()
+        layout.caption = caption
         
+        let session = activeConversation?.selectedMessage?.session
+        let message = MSMessage(session: session ?? MSSession())
+        message.layout = layout
         self.activeConversation?.insert(message, completionHandler: nil)
     }
     
@@ -54,8 +64,10 @@ class MessagesViewController: MSMessagesAppViewController, AddMessageViewControl
         guard let controller = self.storyboard?.instantiateViewController(withIdentifier: "Game") as? Game else {
         fatalError("Game not found")
         }
+        controller.delegate = self
         return controller
     }
+    
     private func instantiateStartGameViewController() -> UIViewController {
         guard let controller = self.storyboard?.instantiateViewController(withIdentifier: "StartGame") as? StartGame else {
             fatalError("StartGame not found")
@@ -63,6 +75,7 @@ class MessagesViewController: MSMessagesAppViewController, AddMessageViewControl
         controller.delegate = self
         return controller
     }
+    
     override func didResignActive(with conversation: MSConversation) {
         // Called when the extension is about to move from the active to inactive state.
         // This will happen when the user dissmises the extension, changes to a different

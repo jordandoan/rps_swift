@@ -9,7 +9,15 @@
 import UIKit
 
 
+protocol GameViewControllerDelegate: class {
+    func gameViewControllerDidSubmit (caption: String)
+}
 class Game: UIViewController {
+    
+    weak var delegate : GameViewControllerDelegate!
+    @IBAction func paper(_ sender: Any) {
+        addMessage()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -19,4 +27,9 @@ class Game: UIViewController {
         super.didReceiveMemoryWarning()
     }
     
+    func addMessage() {
+
+        let caption = "paper"
+        self.delegate.gameViewControllerDidSubmit(caption: caption)
+    }
 }
