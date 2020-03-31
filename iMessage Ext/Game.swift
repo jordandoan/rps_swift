@@ -16,7 +16,15 @@ class Game: UIViewController {
     
     weak var delegate : GameViewControllerDelegate!
     @IBAction func paper(_ sender: Any) {
-        addMessage()
+        addMessage(type: "paper")
+    }
+    
+    @IBAction func rock(_ sender: Any) {
+        addMessage(type: "rock")
+    }
+    
+    @IBAction func scissors(_ sender: Any) {
+        addMessage(type: "scissors")
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,9 +35,8 @@ class Game: UIViewController {
         super.didReceiveMemoryWarning()
     }
     
-    func addMessage() {
+    func addMessage(type: String) {
 
-        let caption = "paper"
-        self.delegate.gameViewControllerDidSubmit(caption: caption)
+        self.delegate.gameViewControllerDidSubmit(caption: type)
     }
 }

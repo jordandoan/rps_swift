@@ -45,9 +45,9 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         controller.didMove(toParent: self)		
     }
     
-    func startGameViewControllerDidSubmit(caption: String) {
+    func startGameViewControllerDidSubmit() {
         let layout = MSMessageTemplateLayout()
-        layout.caption = caption
+        layout.caption = "Rock, Paper, Scissors!"
         
         let session = activeConversation?.selectedMessage?.session
         let message = MSMessage(session: session ?? MSSession())

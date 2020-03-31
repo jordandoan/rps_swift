@@ -9,7 +9,7 @@
 import UIKit
 
 protocol StartGameViewControllerDelegate : class {
-    func startGameViewControllerDidSubmit(caption: String)
+    func startGameViewControllerDidSubmit()
 }
 class StartGame: UIViewController {
     
@@ -24,14 +24,11 @@ class StartGame: UIViewController {
     }
     
     @IBAction func button(_ sender: Any) {
-        
         addMessage()
     }
     
     func addMessage() {
-
-        let caption = "Rock"
-        self.delegate.startGameViewControllerDidSubmit(caption: caption)
+        self.delegate.startGameViewControllerDidSubmit()
     }
     
     
