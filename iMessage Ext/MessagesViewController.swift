@@ -32,6 +32,11 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
             controller = instantiateStartGameViewController()
         } else {
             if let session = conversation.selectedMessage?.session {
+//                let message = conversation.selectedMessage?.url
+//                guard let components = URLComponents(url: message!, resolvingAgainstBaseURL: false) else {
+//                    fatalError("The message contains an invalid URL")
+//                }
+                
                 controller = instatiateGameViewController()
             } else {
                 controller = instantiateStartGameViewController()
@@ -48,10 +53,14 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
     func startGameViewControllerDidSubmit() {
         let layout = MSMessageTemplateLayout()
         layout.caption = "Rock, Paper, Scissors!"
-        
         let session = activeConversation?.selectedMessage?.session
         let message = MSMessage(session: session ?? MSSession())
         message.layout = layout
+        var components = URLComponents()
+        let uuid = activeConversation?.localParticipantIdentifier.uuidString
+        let user = URLQueryItem(name: "player_1", value: uuid)
+        components.queryItems = [user]
+        message.url = components.url
         self.activeConversation?.insert(message, completionHandler: nil)
     }
     
@@ -62,6 +71,7 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         let session = activeConversation?.selectedMessage?.session
         let message = MSMessage(session: session ?? MSSession())
         message.layout = layout
+        
         self.activeConversation?.send(message, completionHandler: nil)
         dismiss()
     }
