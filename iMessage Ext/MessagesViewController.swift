@@ -23,20 +23,25 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         // This will happen when the extension is about to present UI.
         
         // Use this method to configure the extension and restore previously stored state.
-        presentViewController(for: conversation, with: presentationStyle)
+        
     }
     
+    override func didBecomeActive(with conversation: MSConversation) {
+        presentViewController(for: conversation, with: presentationStyle)
+    }
     private func presentViewController(for conversation: MSConversation, with presentationStyle: MSMessagesAppPresentationStyle) {
-        var controller: UIViewController!
+        removeAllChildViewControllers()
+        var controller: UIViewController
         if presentationStyle == .compact {
             controller = instantiateStartGameViewController()
         } else {
+            controller = UIViewController()
             if let session = conversation.selectedMessage?.session {
 //                let message = conversation.selectedMessage?.url
 //                guard let components = URLComponents(url: message!, resolvingAgainstBaseURL: false) else {
 //                    fatalError("The message contains an invalid URL")
 //                }
-                
+                NSLog("hi")
                 controller = instatiateGameViewController()
             } else {
                 controller = instantiateStartGameViewController()
@@ -45,20 +50,30 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         }
         addChild(controller)
         controller.view.frame = view.bounds
-        controller.view.translatesAutoresizingMaskIntoConstraints = false
+//        controller.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(controller.view)
-        controller.didMove(toParent: self)		
+        
+        controller.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        controller.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        controller.view.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        controller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        controller.didMove(toParent: self)
+        if let expanded = controller as? Game {
+            if let url = conversation.selectedMessage?.url {
+                expanded.checkSelf(from: url, self_id: self.activeConversation!.localParticipantIdentifier.uuidString)
+            }
+        }
     }
     
     func startGameViewControllerDidSubmit() {
         let layout = MSMessageTemplateLayout()
         layout.caption = "Rock, Paper, Scissors!"
-        let session = activeConversation?.selectedMessage?.session
+        let session = self.activeConversation?.selectedMessage?.session
         let message = MSMessage(session: session ?? MSSession())
         message.layout = layout
         var components = URLComponents()
-        let uuid = activeConversation?.localParticipantIdentifier.uuidString
-        let user = URLQueryItem(name: "player_1", value: uuid)
+        let uuid = self.activeConversation?.localParticipantIdentifier.uuidString
+        let user = URLQueryItem(name: "user", value: uuid)
         components.queryItems = [user]
         message.url = components.url
         self.activeConversation?.insert(message, completionHandler: nil)
@@ -68,7 +83,7 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         let layout = MSMessageTemplateLayout()
         layout.caption = caption
         
-        let session = activeConversation?.selectedMessage?.session
+        let session = self.activeConversation?.selectedMessage?.session
         let message = MSMessage(session: session ?? MSSession())
         message.layout = layout
         
@@ -77,7 +92,7 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
     }
     
     private func instatiateGameViewController() -> UIViewController {
-        guard let controller = self.storyboard?.instantiateViewController(withIdentifier: "Game") as? Game else {
+        guard let controller = self.storyboard!.instantiateViewController(withIdentifier: "Game") as? Game else {
         fatalError("Game not found")
         }
         controller.delegate = self
@@ -85,8 +100,8 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
     }
     
     private func instantiateStartGameViewController() -> UIViewController {
-        guard let controller = self.storyboard?.instantiateViewController(withIdentifier: "StartGame") as? StartGame else {
-            fatalError("StartGame not found")
+        guard let controller = self.storyboard!.instantiateViewController(withIdentifier: "StartGame") as? StartGame else {
+        fatalError("StartGame not found")
         }
         controller.delegate = self
         return controller
@@ -109,31 +124,23 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         // Use this method to trigger UI updates in response to the message.
     }
     
-    override func didStartSending(_ message: MSMessage, conversation: MSConversation) {
-        // Called when the user taps the send button.
-    }
-    
-    override func didCancelSending(_ message: MSMessage, conversation: MSConversation) {
-        // Called when the user deletes the message without sending it.
-    
-        // Use this to clean up state related to the deleted message.
-    }
-    
-    override func willTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
-        // Called before the extension transitions to a new presentation style.
-    
-        // Use this method to prepare for the change in presentation style.
-        guard let conversation = activeConversation else {
-            fatalError("Expected an active conversation")
-        }
-        
-        presentViewController(for: conversation, with: presentationStyle)
-    }
+//    override func didStartSending(_ message: MSMessage, conversation: MSConversation) {
+//        // Called when the user taps the send button.
+//    }
+
     
     override func didTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
         // Called after the extension transitions to a new presentation style.
-    
         // Use this method to finalize any behaviors associated with the change in presentation style.
+        guard let conversation = self.activeConversation else { fatalError("Expected an active conversation")}
+        presentViewController(for: conversation, with: presentationStyle)
     }
-
+    
+    private func removeAllChildViewControllers() {
+        for child in children {
+            child.willMove(toParent: nil)
+            child.view.removeFromSuperview()
+            child.removeFromParent()
+        }
+    }
 }

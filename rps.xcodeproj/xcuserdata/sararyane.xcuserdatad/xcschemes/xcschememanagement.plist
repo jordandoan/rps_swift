@@ -7,12 +7,35 @@
 		<key>iMessage Ext.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 		<key>rps.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>1BE3B24024316F8F00B5C7D9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>1BE3B25624316F9200B5C7D9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>1BE3B26124316F9200B5C7D9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>1BE3B27724316FA200B5C7D9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

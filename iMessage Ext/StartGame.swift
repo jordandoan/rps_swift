@@ -13,7 +13,7 @@ protocol StartGameViewControllerDelegate : class {
 }
 class StartGame: UIViewController {
     
-    weak var delegate : StartGameViewControllerDelegate!
+    var delegate : StartGameViewControllerDelegate?
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -28,7 +28,7 @@ class StartGame: UIViewController {
     }
     
     func addMessage() {
-        self.delegate.startGameViewControllerDidSubmit()
+        self.delegate?.startGameViewControllerDidSubmit()
     }
     
     

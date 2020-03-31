@@ -10,13 +10,13 @@
         <!--Start Game-->
         <scene sceneID="ADM-Ty-37Y">
             <objects>
-                <viewController storyboardIdentifier="StartGame" id="jet-fA-9lO" customClass="StartGame" customModule="iMessage_Ext" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="StartGame" useStoryboardIdentifierAsRestorationIdentifier="YES" id="jet-fA-9lO" customClass="StartGame" customModule="iMessage_Ext" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="AZ7-YA-yk1">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="240"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7ye-TP-FqF">
-                                <rect key="frame" x="94" y="164" width="186" height="163"/>
+                                <rect key="frame" x="94" y="39" width="186" height="163"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <state key="normal" title="Compact view"/>
@@ -28,6 +28,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="9X2-Lh-XOf"/>
                     </view>
+                    <size key="freeformSize" width="375" height="240"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hxv-kV-Ujf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -37,12 +38,6 @@
         <scene sceneID="7MM-of-jgj">
             <objects>
                 <viewController id="ObA-dk-sSI" customClass="MessagesViewController" customModule="iMessage_Ext" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="zMn-AG-sqS">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="528"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <viewLayoutGuide key="safeArea" id="LDy-ih-0nr"/>
-                    </view>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="528"/>
                 </viewController>
@@ -53,18 +48,11 @@
         <!--Game-->
         <scene sceneID="VJZ-k9-d7S">
             <objects>
-                <viewController storyboardIdentifier="Game" id="fNZ-6f-8GZ" customClass="Game" customModule="iMessage_Ext" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Game" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fNZ-6f-8GZ" customClass="Game" customModule="iMessage_Ext" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="BJz-Zg-kVK">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="This is game" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hXQ-fr-VPC">
-                                <rect key="frame" x="182" y="194" width="97" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xvX-f1-BWI">
                                 <rect key="frame" x="124" y="127" width="40" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -89,10 +77,21 @@
                                     <action selector="scissors:" destination="fNZ-6f-8GZ" eventType="touchUpInside" id="z71-3w-PTP"/>
                                 </connections>
                             </button>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="This is game" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hXQ-fr-VPC">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemGray4Color" red="0.81960784310000001" green="0.81960784310000001" blue="0.83921568629999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="lNe-Nm-qIp"/>
                     </view>
+                    <connections>
+                        <outlet property="label" destination="hXQ-fr-VPC" id="dVu-wz-ZBh"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wUN-gI-jYq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

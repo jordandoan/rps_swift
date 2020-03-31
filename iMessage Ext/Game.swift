@@ -14,7 +14,8 @@ protocol GameViewControllerDelegate: class {
 }
 class Game: UIViewController {
     
-    weak var delegate : GameViewControllerDelegate!
+    @IBOutlet weak var label: UILabel!
+    var delegate : GameViewControllerDelegate?
     @IBAction func paper(_ sender: Any) {
         addMessage(type: "paper")
     }
@@ -36,7 +37,21 @@ class Game: UIViewController {
     }
     
     func addMessage(type: String) {
-
-        self.delegate.gameViewControllerDidSubmit(caption: type)
+        self.delegate?.gameViewControllerDidSubmit(caption: type)
+    }
+    
+    func checkSelf(from url: URL, self_id: String) {
+        let components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+        for item in components.queryItems! {
+            if item.name == "user" {
+                let value = item.value
+                if value == self_id {
+                    self.label.isHidden = false
+                } else {
+                    self.label!.isHidden = true
+                }
+            }
+        }
     }
 }
+    
