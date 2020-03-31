@@ -31,7 +31,12 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         if presentationStyle == .compact {
             controller = instantiateStartGameViewController()
         } else {
-            controller = instatiateGameViewController()
+            if let session = conversation.selectedMessage?.session {
+                controller = instatiateGameViewController()
+            } else {
+                controller = instantiateStartGameViewController()
+            }
+//            controller = instatiateGameViewController()
         }
         addChild(controller)
         controller.view.frame = view.bounds
@@ -57,7 +62,8 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         let session = activeConversation?.selectedMessage?.session
         let message = MSMessage(session: session ?? MSSession())
         message.layout = layout
-        self.activeConversation?.insert(message, completionHandler: nil)
+        self.activeConversation?.send(message, completionHandler: nil)
+        dismiss()
     }
     
     private func instatiateGameViewController() -> UIViewController {
