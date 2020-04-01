@@ -13,7 +13,7 @@ protocol GameViewControllerDelegate: class {
     func gameViewControllerDidSubmit (caption: String)
 }
 class Game: UIViewController {
-    
+    @IBOutlet weak var result: UILabel!
     @IBOutlet weak var label: UILabel!
     var delegate : GameViewControllerDelegate?
     @IBAction func paper(_ sender: Any) {
@@ -36,6 +36,7 @@ class Game: UIViewController {
         super.didReceiveMemoryWarning()
     }
     
+
     func addMessage(type: String) {
         self.delegate?.gameViewControllerDidSubmit(caption: type)
     }
@@ -43,7 +44,7 @@ class Game: UIViewController {
     func checkSelf(from url: URL, self_id: String) {
         let components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         for item in components.queryItems! {
-            if item.name == "user" {
+            if item.name == "recent" {
                 let value = item.value
                 if value == self_id {
                     self.label.isHidden = false
@@ -51,6 +52,45 @@ class Game: UIViewController {
                     self.label!.isHidden = true
                 }
             }
+        }
+    }
+    func printMessage() {
+        print("You are printing this message...")
+    }
+    
+    func renderResults(components: URLComponents, result: Int, counter: Int) -> URLComponents {
+//        self.result.text = components.queryItems![4].value! + components.queryItems![5].value!
+        self.result.text = String(result)
+        if result == -1 {
+            return components
+        }
+        var new_components = components
+
+        if result == 0 {
+            self.result.text = "Player 1 wins this round"
+            let next_value:Int? = Int(components.queryItems![6].value!)! + 1
+            new_components.queryItems![6].value = String(next_value!)
+        } else if result == 1 {
+            self.result.text = "Tie"
+        } else if result == 2 {
+            self.result.text = "Player 2 wins this round"
+            let next_value:Int? = Int(components.queryItems![7].value!)! + 1
+            new_components.queryItems![7].value = String(next_value!)
+        }
+        new_components.queryItems![4].value = "None"
+        new_components.queryItems![5].value = "None"
+        return new_components
+    }
+    func determineRoundWinner(p1_move: String, p2_move: String) -> Int {
+        if (p1_move == "None" || p2_move == "None") {
+            return -1
+        }
+        if ((p1_move == "rock" && p2_move == "scissors") || (p1_move == "scissors" && p2_move == "paper") || (p1_move == "paper" && p2_move == "rock")) {
+            return 0
+        } else if p1_move == p2_move {
+            return 1
+        } else {
+            return 2
         }
     }
 }

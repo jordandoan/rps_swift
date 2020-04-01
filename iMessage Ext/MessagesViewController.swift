@@ -15,15 +15,14 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
-    
+    var components: URLComponents!
     // MARK: - Conversation Handling
-    
+    var counter = 0
     override func willBecomeActive(with conversation: MSConversation) {
         // Called when the extension is about to move from the inactive to active state.
         // This will happen when the extension is about to present UI.
         
         // Use this method to configure the extension and restore previously stored state.
-        
     }
     
     override func didBecomeActive(with conversation: MSConversation) {
@@ -37,11 +36,12 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         } else {
             controller = UIViewController()
             if let session = conversation.selectedMessage?.session {
-//                let message = conversation.selectedMessage?.url
-//                guard let components = URLComponents(url: message!, resolvingAgainstBaseURL: false) else {
-//                    fatalError("The message contains an invalid URL")
-//                }
-                NSLog("hi")
+                let message = conversation.selectedMessage?.url
+                guard let components = URLComponents(url: message!, resolvingAgainstBaseURL: false) else {
+                    fatalError("The message contains an invalid URL")
+                }
+                self.components = components
+                self.counter = 0
                 controller = instatiateGameViewController()
             } else {
                 controller = instantiateStartGameViewController()
@@ -71,24 +71,68 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         let session = self.activeConversation?.selectedMessage?.session
         let message = MSMessage(session: session ?? MSSession())
         message.layout = layout
-        var components = URLComponents()
-        let uuid = self.activeConversation?.localParticipantIdentifier.uuidString
-        let user = URLQueryItem(name: "user", value: uuid)
-        components.queryItems = [user]
+        let components = composeInitialURL()
         message.url = components.url
         self.activeConversation?.insert(message, completionHandler: nil)
     }
     
     func gameViewControllerDidSubmit(caption: String) {
-        let layout = MSMessageTemplateLayout()
-        layout.caption = caption
-        
-        let session = self.activeConversation?.selectedMessage?.session
-        let message = MSMessage(session: session ?? MSSession())
-        message.layout = layout
-        
-        self.activeConversation?.send(message, completionHandler: nil)
-        dismiss()
+        counter += 1
+        reviseURL(move: caption)
+        if checkStatus() {
+            let layout = MSMessageTemplateLayout()
+            layout.caption = caption
+            let session = self.activeConversation?.selectedMessage?.session
+            let message = MSMessage(session: session ?? MSSession())
+            message.layout = layout
+            message.url = self.components.url
+            self.activeConversation?.send(message, completionHandler: nil)
+        }
+    }
+    
+    private func checkStatus() -> Bool {
+        let move1 = self.components.queryItems![4].value
+        let move2 = self.components.queryItems![5].value
+        // return true if only one is none
+        if move1 == "None" && move2 != "None" {
+            return true
+        } else if move2 == "None" && move1 != "None" {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    private func reviseURL(move: String) {
+        let view = children[0] as? Game
+        let id = self.activeConversation?.localParticipantIdentifier.uuidString
+        // If you are player 1
+        let result: Int?
+        if id == self.components.queryItems![2].value {
+            self.components.queryItems![4].value = move
+            result = view?.determineRoundWinner(p1_move: move, p2_move: self.components.queryItems![5].value!)
+        } else {
+            self.components.queryItems![5].value = move
+            result = view?.determineRoundWinner(p1_move: self.components.queryItems![4].value!, p2_move: move)
+        }
+        self.components = view!.renderResults(components: self.components, result: result!, counter: self.counter)
+        self.components.queryItems![0].value = id
+    }
+    
+    private func composeInitialURL() -> URLComponents {
+        var components = URLComponents()
+        let uuid = self.activeConversation?.localParticipantIdentifier.uuidString
+        let user = URLQueryItem(name: "recent", value: uuid)
+        let result = URLQueryItem(name: "result", value: "None")
+        let player_1 = URLQueryItem(name: "p1", value: uuid)
+        let uuid2 = self.activeConversation?.remoteParticipantIdentifiers[0].uuidString
+        let player_2 = URLQueryItem(name: "p2", value: uuid2)
+        let p1_move = URLQueryItem(name: "p1_move", value: "None")
+        let p2_move = URLQueryItem(name: "p2_move", value: "None")
+        let p1_score = URLQueryItem(name: "p1_score", value: "0")
+        let p2_score = URLQueryItem(name: "p2_score", value: "0")
+        components.queryItems = [user, result, player_1, player_2, p1_move, p2_move, p1_score, p2_score]
+        return components
     }
     
     private func instatiateGameViewController() -> UIViewController {
