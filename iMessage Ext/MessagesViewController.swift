@@ -17,7 +17,6 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
     }
     var components: URLComponents!
     // MARK: - Conversation Handling
-    var counter = 0
     override func willBecomeActive(with conversation: MSConversation) {
         // Called when the extension is about to move from the inactive to active state.
         // This will happen when the extension is about to present UI.
@@ -41,7 +40,6 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
                     fatalError("The message contains an invalid URL")
                 }
                 self.components = components
-                self.counter = 0
                 controller = instatiateGameViewController()
             } else {
                 controller = instantiateStartGameViewController()
@@ -68,8 +66,7 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
     func startGameViewControllerDidSubmit() {
         let layout = MSMessageTemplateLayout()
         layout.caption = "Rock, Paper, Scissors!"
-        let session = self.activeConversation?.selectedMessage?.session
-        let message = MSMessage(session: session ?? MSSession())
+        let message = MSMessage(session: MSSession())
         message.layout = layout
         let components = composeInitialURL()
         message.url = components.url
@@ -77,7 +74,6 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
     }
     
     func gameViewControllerDidSubmit(caption: String) {
-        counter += 1
         reviseURL(move: caption)
         if checkStatus() {
             let layout = MSMessageTemplateLayout()
@@ -87,6 +83,7 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
             message.layout = layout
             message.url = self.components.url
             self.activeConversation?.send(message, completionHandler: nil)
+            dismiss()
         }
     }
     
@@ -115,7 +112,7 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
             self.components.queryItems![5].value = move
             result = view?.determineRoundWinner(p1_move: self.components.queryItems![4].value!, p2_move: move)
         }
-        self.components = view!.renderResults(components: self.components, result: result!, counter: self.counter)
+        self.components = view!.renderResults(components: self.components, result: result!)
         self.components.queryItems![0].value = id
     }
     

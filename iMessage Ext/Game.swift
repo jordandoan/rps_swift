@@ -58,7 +58,7 @@ class Game: UIViewController {
         print("You are printing this message...")
     }
     
-    func renderResults(components: URLComponents, result: Int, counter: Int) -> URLComponents {
+    func renderResults(components: URLComponents, result: Int) -> URLComponents {
 //        self.result.text = components.queryItems![4].value! + components.queryItems![5].value!
         self.result.text = String(result)
         if result == -1 {
