@@ -12,7 +12,6 @@ protocol StartGameViewControllerDelegate : class {
     func startGameViewControllerDidSubmit()
 }
 class StartGame: UIViewController {
-    
     var delegate : StartGameViewControllerDelegate?
     override func viewDidLoad() {
         super.viewDidLoad()

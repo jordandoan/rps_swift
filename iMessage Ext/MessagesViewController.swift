@@ -58,7 +58,8 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         controller.didMove(toParent: self)
         if let expanded = controller as? Game {
             if let url = conversation.selectedMessage?.url {
-                expanded.checkSelf(from: url, self_id: self.activeConversation!.localParticipantIdentifier.uuidString)
+                expanded.checkSelf(with: self.components, self_id: self.activeConversation!.localParticipantIdentifier.uuidString)
+                renderScore(controller: expanded)
             }
         }
     }
@@ -66,6 +67,7 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
     func startGameViewControllerDidSubmit() {
         let layout = MSMessageTemplateLayout()
         layout.caption = "Rock, Paper, Scissors!"
+        layout.image = UIImage(named: "image.jpg")
         let message = MSMessage(session: MSSession())
         message.layout = layout
         let components = composeInitialURL()
@@ -77,13 +79,16 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         reviseURL(move: caption)
         if checkStatus() {
             let layout = MSMessageTemplateLayout()
+            layout.image = UIImage(named: "image.jpg")
             layout.caption = caption
             let session = self.activeConversation?.selectedMessage?.session
             let message = MSMessage(session: session ?? MSSession())
             message.layout = layout
             message.url = self.components.url
             self.activeConversation?.send(message, completionHandler: nil)
-            dismiss()
+            let view = children[0] as? Game
+            view?.setSent()
+            
         }
     }
     
@@ -105,7 +110,8 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
         let id = self.activeConversation?.localParticipantIdentifier.uuidString
         // If you are player 1
         let result: Int?
-        if id == self.components.queryItems![2].value {
+        let p1_is_self = id == self.components.queryItems![2].value ? true : false
+        if p1_is_self {
             self.components.queryItems![4].value = move
             result = view?.determineRoundWinner(p1_move: move, p2_move: self.components.queryItems![5].value!)
         } else {
@@ -113,7 +119,23 @@ class MessagesViewController: MSMessagesAppViewController, StartGameViewControll
             result = view?.determineRoundWinner(p1_move: self.components.queryItems![4].value!, p2_move: move)
         }
         self.components = view!.renderResults(components: self.components, result: result!)
+        self.renderScore(controller: view!)
         self.components.queryItems![0].value = id
+    }
+    
+    private func renderScore(controller: Game) {
+        let id = self.activeConversation?.localParticipantIdentifier.uuidString
+        let p1_is_self = id == self.components.queryItems![2].value ? true : false
+        var p1: String
+        var p2: String
+        if p1_is_self {
+            p1 = self.components.queryItems![6].value!
+            p2 = self.components.queryItems![7].value!
+        } else {
+            p1 = self.components.queryItems![7].value!
+            p2 = self.components.queryItems![6].value!
+        }
+        controller.renderScore(p1: p1, p2: p2)
     }
     
     private func composeInitialURL() -> URLComponents {

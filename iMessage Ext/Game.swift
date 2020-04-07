@@ -15,9 +15,16 @@ protocol GameViewControllerDelegate: class {
 class Game: UIViewController {
     @IBOutlet weak var result: UILabel!
     @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var opp_score: UILabel!
+    @IBOutlet weak var self_score: UILabel!
     var delegate : GameViewControllerDelegate?
     @IBAction func paper(_ sender: Any) {
         addMessage(type: "paper")
+    }
+    
+    func renderScore(p1: String = "0", p2: String = "0") {
+        self.self_score.text = p1
+        self.opp_score.text = p2
     }
     
     @IBAction func rock(_ sender: Any) {
@@ -27,8 +34,10 @@ class Game: UIViewController {
     @IBAction func scissors(_ sender: Any) {
         addMessage(type: "scissors")
     }
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.label.text = ""
         // Do any additional setup after loading the view.
     }
     
@@ -41,18 +50,24 @@ class Game: UIViewController {
         self.delegate?.gameViewControllerDidSubmit(caption: type)
     }
     
-    func checkSelf(from url: URL, self_id: String) {
-        let components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+    
+    func checkSelf(with components: URLComponents, self_id: String) {
         for item in components.queryItems! {
             if item.name == "recent" {
                 let value = item.value
                 if value == self_id {
                     self.label.isHidden = false
+                    self.label.text = "Waiting for player..."
                 } else {
                     self.label!.isHidden = true
                 }
             }
         }
+    }
+    
+    func setSent() {
+        self.label.isHidden = false
+        self.label.text = "Waiting for player..."
     }
     func printMessage() {
         print("You are printing this message...")
